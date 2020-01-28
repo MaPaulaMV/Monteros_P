@@ -1,0 +1,78 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+    <ui:define name="title">Producto Repaso</ui:define>
+    <ui:define name="breadcrumb">
+        <li>Components</li>
+        <li><i class="material-icons">chevron_right</i></li>
+        <li><p:link outcome="/forms">Forms</p:link></li>
+    </ui:define>
+    <ui:define name="content">
+        <div class="card">
+            <div class="card-title">Producto
+                <br/> <br/>
+                <h:form id="formProducto">
+                    <p:dataTable id="tableProducto" value="#{productoBean.productos}" var="producto" rows="12" selectionMode="single" selection="#{productoBean.productoSelccion}"
+                                 rowKey="#{producto.codigo}"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="6,12,16">
+                        <p:ajax event="rowSelect" listener="#{productoBean.seleccion()}" update=":formProducto:panelBotones"/>
+                        <p:ajax event="rowUnselect" listener="#{productoBean.seleccion()}" update=":formProducto:panelBotones"/>
+                        <f:facet name="header">
+                            Listado Productos
+                        </f:facet>
+                        <p:column headerText="Código">
+                            #{producto.codigo}
+                        </p:column>
+                        <p:column headerText="Nombre">
+                            #{producto.nombre}
+                        </p:column>
+                        <p:column headerText="Precio">
+                            #{producto.precio}
+                        </p:column>
+                        <p:column headerText="Tipo">
+                            #{producto.tipo.text}
+                        </p:column>                        
+                    </p:dataTable>
+                    <br/>
+                    <p:panel id="panelBotones">
+                        <p:commandButton id="btnNuevo" value="Nuveo" action="#{productoBean.nuevo()}" update="@form" disabled="#{productoBean.btnNuevo}" style="margin-right:20px;" icon="ui-icon-plus" immediate="true"/>
+                        <p:commandButton id="btnEditar" value="Editar" action="#{productoBean.editar()}" update="@form" style="margin-right:20px;" icon="ui-icon-pencil" disabled="#{(productoBean.btnModificar) or(productoBean.productoSelccion eq null)}" immediate="true"/>
+                        <p:commandButton id="btnEliminar" value="Eliminar" action="#{productoBean.eliminar()}" update="@form" style="margin-right:20px;" icon="ui-icon-trash" disabled="#{(productoBean.btnEliminar) or (productoBean.productoSelccion eq null)}" immediate="true">
+                            <p:confirm header="Confirmar Acción" message="¿Estás seguro que deseas eliminar este registro?" />
+                        </p:commandButton>
+                    </p:panel>                                     
+                    <p:panel header="Producto" id="formulario" rendered="#{productoBean.mostrar}">
+                        <p:panelGrid columns="1" layout="grid" styleClass="showcase-text-align-center" style="width: 50%">
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:inputText id="nombre" required="true" value="#{productoBean.producto.nombre}"/>
+                                <p:outputLabel for="nombre" value="Nombre" />
+                            </h:panelGroup>
+                            <h:panelGroup styleClass="md-inputfield">
+                                <p:inputNumber id="precio" required="true" value="#{productoBean.producto.precio}"/>
+                                <p:outputLabel for="precio" value="Precio" />
+                            </h:panelGroup>
+                            <p:outputLabel for="tipo" value="Tipo" />
+                            <p:selectOneMenu id="tipo" value="#{productoBean.producto.tipo}" required="true">
+                                <f:selectItem itemLabel="Seleccione" itemValue="#{null}" noSelectionOption="true" />
+                                <f:selectItems value="#{productoBean.tipos}" var="tipoSeleccion" itemLabel="#{tipoSeleccion.text}" itemValue="#{tipoSeleccion}" />
+                            </p:selectOneMenu>
+                        </p:panelGrid>                      
+                        <div id="accionBotones">
+                            <p:commandButton id="btnGuardar" value="Guardar" action="#{productoBean.guardar()}" update="@form" style="margin-right:20px;" icon="ui-icon-save"/>
+                            <p:commandButton id="btnCancelar" value="Cancelar" action="#{productoBean.cancelar()}" update="@form" style="margin-right:20px;" icon="ui-icon-cancel" immediate="true"/>
+                        </div>
+                    </p:panel>
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes"/>
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+                    </p:confirmDialog>
+                </h:form>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
