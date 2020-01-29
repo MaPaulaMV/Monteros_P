@@ -1,38 +1,36 @@
 /*
  * ESPE - DCC - APLICACIONES DISTRIBUIDAS
- * Sistema: Monteros_P-ejb
+ * Sistema: Global-ejb
  * 
- * Creado: 28/01/2020 - 7:24:59
+ * Creado: 15/12/2019 - 12:41:21
  * 
  * Los contenidos de este archivo son propiedad privada y estan protegidos por la licencia BSD.
  * 
  * 
  * Se puede utilizar, reproducir o copiar el contenido de este archivo.
  */
-package ec.edu.espe.distribuidas.monteros_p.enums;
+
+
+package ec.edu.espe.distribuidas.global.enums;
 
 /**
  *
- * @author Paula
+ * 
+ *
+ * @author Toro Jordan
  */
-public enum TipoProductoEnum {
+public enum EstadoActivoInactivoEnum {
+    /** Representa al valor Activo. */
+    ACT("Activo"),
+    /** Representa al valor Inactivo. */
+    INA("Inactivo");    
     
     /**
-     * Representa al valor Casado.
+     * Propiedad que contiene el texto asociado del elemento.
      */
-    N("Nuevo"),
-    /**
-     * Representa al valor Soltero.
-     */
-    A("Antiguo"),
-    /**
-     * Representa al valor Divorciado.
-     */
-    F("Frecuente");
-    
     private final String text;
 
-    private TipoProductoEnum(String text) {
+    private EstadoActivoInactivoEnum(String text) {
         this.text = text;
     }
 
@@ -44,6 +42,4 @@ public enum TipoProductoEnum {
     public String getText() {
         return this.text;
     }
-    
-    
 }

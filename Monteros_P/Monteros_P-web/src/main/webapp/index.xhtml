@@ -1,0 +1,106 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+    <ui:define name="title">Examen</ui:define>
+    <ui:define name="breadcrumb">
+        <li>Components</li>
+        <li><i class="material-icons">chevron_right</i></li>
+        <li><p:link outcome="/forms">Forms</p:link></li>
+    </ui:define>
+    <ui:define name="content">
+        <div class="card">
+            <div class="card-title">Modulos
+                <br/> <br/>
+                <h:form id="form">
+                    <p:dataTable id="tableModulos" value="#{moduloBean.modulos}" var="modulo" rows="12" selectionMode="single" selection="#{moduloBean.moduloSelccion}"
+                                 rowKey="#{modulo.codigo}"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="6,12,16">
+                        <p:ajax event="rowSelect" listener="#{moduloBean.seleccionModulo()}" update="@form"/>
+                        <p:ajax event="rowUnselect" listener="#{productoBean.seleccion()}" update="@form"/>
+                        <f:facet name="header">
+                            Listado Modulos
+                        </f:facet>
+                        <p:column headerText="Código">
+                            #{modulo.codigo}
+                        </p:column>
+                        <p:column headerText="Nombre">
+                            #{modulo.nombre}
+                        </p:column>
+                        <p:column headerText="Estado">
+                            #{modulo.estado.text}
+                        </p:column>                                              
+                    </p:dataTable>
+                    <br/>
+                    <p:panel id="btnMostrar">
+                        <p:commandButton id="mostrar" value="Mostrar Funcionalidad" action="#{moduloBean.mostrarFuncionalidades()}" style="margin-right:20px;" icon="ui-icon-plus" update="@form funcionalidades" immediate="true" disabled="#{moduloBean.moduloSelccion eq null}"/>
+                    </p:panel>
+                    <p:panel id="funcionalidades" header="Funcionalidades" rendered="#{moduloBean.mostrar}">
+                        <p:dataTable id="tableFuncionalidad" value="#{moduloBean.funcionalidades}" var="funcionalidad" rows="12" selectionMode="single" selection="#{moduloBean.funcionalidadSelccion}"
+                                     rowKey="#{funcionalidad.codigo}"
+                                     paginator="true"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="6,12,16">
+                            <p:ajax event="rowSelect" listener="#{moduloBean.seleccionFuncionalidad()}" update="@form"/>
+                            <p:ajax event="rowUnselect" listener="#{moduloBean.seleccionFuncionalidad()}" update="@form"/>
+                            <f:facet name="header">
+                                #{moduloBean.titulo}
+                            </f:facet>
+                            <p:column headerText="Código">
+                                #{funcionalidad.codigo}
+                            </p:column>
+                            <p:column headerText="Nombre">
+                                #{funcionalidad.nombre}
+                            </p:column>
+                            <p:column headerText="URL">
+                                #{funcionalidad.urlPrincipal}
+                            </p:column>                                              
+                        </p:dataTable>
+                        <br/>
+                        <p:panel id="panelBotones">
+                            <p:commandButton id="btnNuevo" value="Nuveo" style="margin-right:20px;" icon="ui-icon-plus" disabled="#{moduloBean.btnNuevo}" immediate="true"/>
+                            <p:commandButton id="btnDetalles" value="Detalles" action="#{moduloBean.detalles()}" update="@form" style="margin-right:20px;" disabled="#{(moduloBean.btnDetalles) or(moduloBean.funcionalidadSelccion eq null)}" immediate="true"/>
+                            <p:commandButton id="btnEliminar" value="Eliminar" action="#{moduloBean.eliminar()}" update="@form" style="margin-right:20px;" icon="ui-icon-trash" disabled="#{(moduloBean.btnEliminar) or (moduloBean.funcionalidadSelccion eq null)}" immediate="true">
+                                <p:confirm header="Confirmar Acción" message="¿Estás seguro que deseas eliminar este registro?" />
+                            </p:commandButton>
+                        </p:panel>  
+                        <p:panel id="formularioFuncionalidad" header="Funcionalidad" rendered="#{moduloBean.mostrarFuncionalidad}">
+                            <p:panelGrid columns="1" layout="grid" styleClass="showcase-text-align-center" style="width: 100%">
+                                <h:panelGroup styleClass="md-inputfield">
+                                    <p:inputText id="codigo" required="true" value="#{moduloBean.funcionalidad.codigo}"/>
+                                    <p:outputLabel for="codigo" value="Codigo" />
+                                </h:panelGroup>
+                                <h:panelGroup styleClass="md-inputfield">
+                                    <p:inputText id="nombre" required="true" value="#{moduloBean.funcionalidad.nombre}"/>
+                                    <p:outputLabel for="nombre" value="Nombre" />
+                                </h:panelGroup>
+                                <h:panelGroup styleClass="md-inputfield">
+                                    <p:inputText id="url" required="true" value="#{moduloBean.funcionalidad.urlPrincipal}"/>
+                                    <p:outputLabel for="url" value="URL" />
+                                </h:panelGroup>
+                                <h:panelGroup styleClass="md-inputfield">
+                                    <p:inputText id="descrip" required="true" value="#{moduloBean.funcionalidad.descripcion}"/>
+                                    <p:outputLabel for="descrip" value="Descripcion" />
+                                </h:panelGroup> 
+                            </p:panelGrid> 
+                            <br/>
+                            <div id="accionBotones">
+                                <p:commandButton id="btnGuardar" value="Guardar" style="margin-right:20px;" icon="ui-icon-save"/>
+                                <p:commandButton id="btnCancelar" action="#{moduloBean.cancelar()}" value="Cancelar" style="margin-right:20px;" icon="ui-icon-cancel" immediate="true"/>
+                            </div>
+                        </p:panel>    
+                    </p:panel>
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes"/>
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+                    </p:confirmDialog>
+                </h:form>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+
